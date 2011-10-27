@@ -5,5 +5,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
     version="2.0">
-
+	<managed-bean>
+		<managed-bean-name>gameModelBean</managed-bean-name>
+		<managed-bean-class>ch.hsr.votegame.beans.GameModelBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gameControllerBean</managed-bean-name>
+		<managed-bean-class>ch.hsr.votegame.beans.GameControllerBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+		 <property-name>modelBean</property-name>
+		 <value>#{gameModelBean}</value>
+		</managed-property>
+	</managed-bean>
 </faces-config>
