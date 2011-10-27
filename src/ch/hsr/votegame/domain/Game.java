@@ -14,15 +14,20 @@ public class Game {
 	private List<HistoryEntry<User, Integer>> voteHistory;
 	private List<User> users;
 
-	public Game() {
+	public Game(int id) {
+		gameId = id;
 		users = new ArrayList<User>(MAX_USERS);
 		voteHistory = new ArrayList<HistoryEntry<User, Integer>>();
 		secretVote = new Integer(new Random().nextInt(maxRangeNr));
 		System.out.println("Secret Vote: " + secretVote);
 	}
-	
-	public void addUser(User user){
+
+	public void addUser(User user) {
 		users.add(user);
+	}
+
+	public boolean won(User user) {
+		return (user.getCurrentVote() == secretVote) ? true : false;
 	}
 
 	public int getGameId() {
@@ -64,8 +69,8 @@ public class Game {
 	public void setHistory(List<HistoryEntry<User, Integer>> history) {
 		this.voteHistory = history;
 	}
-	
-	public void addToHistory(HistoryEntry<User, Integer> historyEntry){
+
+	public void addToHistory(HistoryEntry<User, Integer> historyEntry) {
 		voteHistory.add(historyEntry);
 	}
 

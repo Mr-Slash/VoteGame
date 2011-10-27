@@ -1,12 +1,15 @@
 package ch.hsr.votegame.beans;
 
+import javax.faces.context.FacesContext;
+
 import ch.hsr.votegame.domain.Game;
 import ch.hsr.votegame.domain.HistoryEntry;
 import ch.hsr.votegame.domain.User;
 
 public class GameControllerBean {
 	private GameModelBean modelBean;
-
+	private int gameCounter = 0;
+	
 	public GameModelBean getModelBean() {
 		return modelBean;
 	}
@@ -23,29 +26,31 @@ public class GameControllerBean {
 
 	public String check(){
 		if (!gameExists()){
-			if(!joinableGameExists()){
-				updateComponents(new Game());
+			Game joinableGame = getJoinableGame();
+			
+			if(joinableGame != null){
+				modelBean.setGame(joinableGame);
 			}else{
-				storeGame();
+				Game game = new Game(gameCounter++);
+				modelBean.setGame(game);
+				storeToContext(game);
 			}
 		}
 		return "index.xhtml";
 	}
 
-	private void updateComponents(Game game) {
-		modelBean.setGame(game);
-		//Store game in Context
+	private void storeToContext(Game game){
+		FacesContext fc = FacesContext.getCurrentInstance();
+		//TODO
+		
+	}
+
+	private Game getJoinableGame() {
+		//TODO
+		return null;
 	}
 
 	private boolean gameExists() {
 		return (modelBean.getGame() != null);
-	}
-	
-	private boolean joinableGameExists() {
-		return false;
-	}
-	
-	private void storeGame() {
-		
 	}
 }
