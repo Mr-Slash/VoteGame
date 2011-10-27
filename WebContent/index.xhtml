@@ -4,14 +4,47 @@
 	  xmlns:f="http://java.sun.com/jsf/core"  
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.prime.com.tr/ui">
+      
 <h:head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<link type="text/css" rel="stylesheet" href="resources/css/default.css" />
+	<title>VoteGame</title>
 </h:head>
 <h:body>
-<p:panel>
-	#{gameControllerBean.modelBean.name}
-</p:panel>
+
+<p:layout fullPage="true">  
+  
+    <p:layoutUnit position="north" size="50">  
+        <h1>VoteGame</h1> 
+    </p:layoutUnit>  
+  
+    <p:layoutUnit position="south" size="50">  
+        <h:outputText value="Footer" />  
+    </p:layoutUnit>  
+  
+    <p:layoutUnit position="west" size="800">  
+		<h:form>
+			<br /><br /><br /><br />
+			<h:inputText id="voteInput" value="#{gameModelBean.userVote}">
+			#{gameModelBean.userVote}
+				<f:validateLongRange minimum="#{gameModelBean.game.minRangeNr}"
+									 maximum="#{gameModelBean.game.maxRangeNr}"/>
+			</h:inputText>
+			
+			<h:commandButton id="submit" value="Neues Spiel" action="index.xhtml" />
+				
+			<br />
+			
+			<h:message for="voteInput" id="errorMsgs" showSummary="true" showDetail="false" />
+		</h:form>
+		
+    </p:layoutUnit>  
+  
+    <p:layoutUnit position="center" size="200">  
+     		<h:outputText value="Statistik" /> 
+    </p:layoutUnit>  
+  
+</p:layout>
 
 </h:body>
 </html>

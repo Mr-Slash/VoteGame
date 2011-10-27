@@ -1,13 +1,34 @@
 package ch.hsr.votegame.beans;
 
-public class GameModelBean {
-	private String name = "bla";
+import ch.hsr.votegame.domain.Game;
+import ch.hsr.votegame.domain.User;
 
-	public void setName(String name) {
-		this.name = name;
+public class GameModelBean {
+	private Game game;
+	private User user;
+	private int userVote;
+	
+	public int getUserVote() {
+		return userVote;
 	}
 
-	public String getName() {
-		return name;
+	public void setUserVote(int userVote) {
+		this.userVote = userVote;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
 	}
 }

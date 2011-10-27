@@ -4,6 +4,11 @@ public class User {
 	private String nickname;
 	private int currentVote;
 
+	public User(String name, int vote){
+		this.nickname = name;
+		this.currentVote = vote;
+	}
+	
 	public String getNickname() {
 		return nickname;
 	}

@@ -1,43 +1,79 @@
 package ch.hsr.votegame.domain;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Random;
 
 public class Game {
 	private int gameId;
-	private int minRange;
-	private int maxRange;
+	private int minRangeNr = 1;
+	private int maxRangeNr = 5;
 	private int secretVote;
-	private List<Entry<User, Integer>> history;
+	private boolean gameOver;
+	private final int MAX_USERS = 3;
+	private List<HistoryEntry<User, Integer>> voteHistory;
+	private List<User> users;
+
+	public Game() {
+		users = new ArrayList<User>(MAX_USERS);
+		voteHistory = new ArrayList<HistoryEntry<User, Integer>>();
+		secretVote = new Integer(new Random().nextInt(maxRangeNr));
+		System.out.println("Secret Vote: " + secretVote);
+	}
 	
+	public void addUser(User user){
+		users.add(user);
+	}
+
 	public int getGameId() {
 		return gameId;
 	}
+
 	public void setGameId(int gameId) {
 		this.gameId = gameId;
 	}
-	public int getMinRange() {
-		return minRange;
+
+	public int getMinRangeNr() {
+		return minRangeNr;
 	}
-	public void setMinRange(int minRange) {
-		this.minRange = minRange;
+
+	public void setMinRangeNr(int minRangeNr) {
+		this.minRangeNr = minRangeNr;
 	}
-	public int getMaxRange() {
-		return maxRange;
+
+	public int getMaxRangeNr() {
+		return maxRangeNr;
 	}
-	public void setMaxRange(int maxRange) {
-		this.maxRange = maxRange;
+
+	public void setMaxRangeNr(int maxRangeNr) {
+		this.maxRangeNr = maxRangeNr;
 	}
+
 	public int getSecretVote() {
 		return secretVote;
 	}
+
 	public void setSecretVote(int secretVote) {
 		this.secretVote = secretVote;
 	}
-	public List<Entry<User, Integer>> getHistory() {
-		return history;
+
+	public List<HistoryEntry<User, Integer>> getHistory() {
+		return voteHistory;
 	}
-	public void setHistory(List<Entry<User, Integer>> history) {
-		this.history = history;
+
+	public void setHistory(List<HistoryEntry<User, Integer>> history) {
+		this.voteHistory = history;
+	}
+	
+	public void addToHistory(HistoryEntry<User, Integer> historyEntry){
+		voteHistory.add(historyEntry);
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 }
