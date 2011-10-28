@@ -4,7 +4,7 @@ import ch.hsr.votegame.domain.Game;
 import ch.hsr.votegame.domain.User;
 
 public class GameModelBean {
-	private Game game; //= new Game(1); //TODO remove initialization, only for testing
+	private Game game;
 	private User user;
 	private int userVote;
 	
