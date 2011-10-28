@@ -10,9 +10,14 @@ public class Game {
 	private int maxRangeNr = 5;
 	private int secretVote;
 	private boolean gameOver;
-	private final int MAX_USERS = 3;
+
+	public static final int MAX_USERS = 3;
+	public static final String PLAYER_1 = "Spieler 1";
+	public static final String PLAYER_2 = "Spieler 2";
+	public static final String PLAYER_3 = "Spieler 3";
+
 	private List<HistoryEntry<User, Integer>> voteHistory;
-	private List<User> users;
+	private ArrayList<User> users;
 
 	public Game(int id) {
 		gameId = id;
@@ -24,6 +29,10 @@ public class Game {
 
 	public void addUser(User user) {
 		users.add(user);
+	}
+
+	public ArrayList<User> getUsers() {
+		return users;
 	}
 
 	public boolean won(User user) {

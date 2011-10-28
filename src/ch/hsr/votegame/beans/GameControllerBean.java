@@ -1,5 +1,8 @@
 package ch.hsr.votegame.beans;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import javax.faces.context.FacesContext;
 
 import ch.hsr.votegame.domain.Game;
@@ -8,8 +11,13 @@ import ch.hsr.votegame.domain.User;
 
 public class GameControllerBean {
 	private GameModelBean modelBean;
-	private int gameCounter = 0;
-	
+	private static int gameCounter = 0;
+	private static final String GAMES_LIST = "gamesList";
+
+	public GameControllerBean() {
+		System.out.println("controller bean created");
+	}
+
 	public GameModelBean getModelBean() {
 		return modelBean;
 	}
@@ -17,21 +25,23 @@ public class GameControllerBean {
 	public void setModelBean(GameModelBean modelBean) {
 		this.modelBean = modelBean;
 	}
-	
-	public String addVote(){
+
+	public String addVote() {
 		Game game = modelBean.getGame();
 		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
 		return "ok";
 	}
 
-	public String check(){
-		if (!gameExists()){
+	public String check() {
+		if (!gameExists()) {
 			Game joinableGame = getJoinableGame();
-			
-			if(joinableGame != null){
+
+			if (joinableGame != null) {
+				addUser(joinableGame);
 				modelBean.setGame(joinableGame);
-			}else{
+			} else {
 				Game game = new Game(gameCounter++);
+				addUser(game);
 				modelBean.setGame(game);
 				storeToContext(game);
 			}
@@ -39,18 +49,39 @@ public class GameControllerBean {
 		return "index.xhtml";
 	}
 
-	private void storeToContext(Game game){
-		FacesContext fc = FacesContext.getCurrentInstance();
-		//TODO
-		
+	private void addUser(Game game) {
+		int count = game.getUsers().size();
+		if (count == 1)
+			game.addUser(new User(Game.PLAYER_2, modelBean.getUserVote()));
+		if (count == 2) {
+			game.addUser(new User(Game.PLAYER_3, modelBean.getUserVote()));
+		} else {
+			game.addUser(new User(Game.PLAYER_1, modelBean.getUserVote()));
+		}
+	}
+
+	private void storeToContext(Game game) {
+		getApplicationMap().put(Integer.toString(game.getGameId()), game);
 	}
 
 	private Game getJoinableGame() {
-		//TODO
+		for (Game game : getGames()) {
+			if (game.getUsers().size() < Game.MAX_USERS) {
+				return game;
+			}
+		}
 		return null;
 	}
 
 	private boolean gameExists() {
 		return (modelBean.getGame() != null);
+	}
+
+	private ArrayList<Game> getGames() {
+		return (ArrayList<Game>) getApplicationMap().get(GAMES_LIST);
+	}
+
+	private Map<String, Object> getApplicationMap() {
+		return FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
 	}
 }
