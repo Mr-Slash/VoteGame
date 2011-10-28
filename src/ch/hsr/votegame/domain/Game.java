@@ -24,7 +24,7 @@ public class Game {
 		users = new ArrayList<User>(MAX_USERS);
 		voteHistory = new ArrayList<HistoryEntry<User, Integer>>();
 		secretVote = new Integer(new Random().nextInt(maxRangeNr));
-		System.out.println("Secret Vote: " + secretVote);
+		System.out.println("new Game created with secret Vote: " + secretVote);
 	}
 
 	public void addUser(User user) {
@@ -35,7 +35,7 @@ public class Game {
 		return users;
 	}
 
-	public boolean won(User user) {
+	public boolean isWon(User user) {
 		return (user.getCurrentVote() == secretVote) ? true : false;
 	}
 

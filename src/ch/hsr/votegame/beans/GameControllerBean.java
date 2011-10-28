@@ -1,9 +1,12 @@
 package ch.hsr.votegame.beans;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import ch.hsr.votegame.domain.Game;
 import ch.hsr.votegame.domain.HistoryEntry;
@@ -11,13 +14,13 @@ import ch.hsr.votegame.domain.User;
 
 public class GameControllerBean {
 	private GameModelBean modelBean;
-	private static int gameCounter = 0;
+	private static int gameCounter = 1;
 	private static final String GAMES_LIST = "gamesList";
 
-	public GameControllerBean() {
-		System.out.println("controller bean created");
+	public GameControllerBean(){
+		getApplicationMap().put(GAMES_LIST, new ArrayList<Game>());
 	}
-
+	
 	public GameModelBean getModelBean() {
 		return modelBean;
 	}
@@ -27,9 +30,14 @@ public class GameControllerBean {
 	}
 
 	public String addVote() {
+		System.out.println("Method addVote() in Controller started");
 		Game game = modelBean.getGame();
 		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
-		return "ok";
+		if (game.isWon(modelBean.getUser())){
+			game.setGameOver(true);
+			return "rerender page show winner, secret vote, vote history and new game link";
+		}
+		return "show old vote and vote history";
 	}
 
 	public String check() {
@@ -37,14 +45,18 @@ public class GameControllerBean {
 			Game joinableGame = getJoinableGame();
 
 			if (joinableGame != null) {
+				System.out.println("joinable game found");
 				addUser(joinableGame);
 				modelBean.setGame(joinableGame);
 			} else {
+				System.out.println("no joinable games found");
 				Game game = new Game(gameCounter++);
 				addUser(game);
 				modelBean.setGame(game);
 				storeToContext(game);
 			}
+			invalidateSession();
+			return "start page";
 		}
 		return "index.xhtml";
 	}
@@ -58,6 +70,7 @@ public class GameControllerBean {
 		} else {
 			game.addUser(new User(Game.PLAYER_1, modelBean.getUserVote()));
 		}
+		System.out.println("added User ["+game.getUsers().get(game.getUsers().size()-1).getNickname()+"] to game "+ game.getGameId());
 	}
 
 	private void storeToContext(Game game) {
@@ -65,7 +78,9 @@ public class GameControllerBean {
 	}
 
 	private Game getJoinableGame() {
-		for (Game game : getGames()) {
+		Iterator<Game> it = getGames().iterator();
+		while(it.hasNext()){
+			Game game = it.next();
 			if (game.getUsers().size() < Game.MAX_USERS) {
 				return game;
 			}
@@ -82,6 +97,16 @@ public class GameControllerBean {
 	}
 
 	private Map<String, Object> getApplicationMap() {
-		return FacesContext.getCurrentInstance().getExternalContext().getApplicationMap();
+		return getContext().getApplicationMap();
+	}
+	
+	private void invalidateSession() {
+		HttpSession session = (HttpSession) getContext().getSession(false);
+		session.invalidate();
+		System.out.println("Session invalidiert");
+	}
+	
+	private ExternalContext getContext(){
+		return FacesContext.getCurrentInstance().getExternalContext();
 	}
 }

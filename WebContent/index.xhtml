@@ -25,13 +25,13 @@
     <p:layoutUnit position="west" size="800">  
 		<h:form>
 			<br /><br /><br /><br />
-			<h:inputText id="voteInput" value="#{gameModelBean.userVote}">
+			<h:inputText id="voteInput" value="#{gameModelBean.userVote}" rendered="false">
 				<f:validateLongRange minimum="#{gameModelBean.game.minRangeNr}"
 									 maximum="#{gameModelBean.game.maxRangeNr}"/>
 			</h:inputText>
 			
-			<h:commandButton id="vote" value="Raten" action="index.xhtml" rendered="true" />
-			<h:commandButton id="newgame" value="Neues Spiel" action="index.xhtml" rendered="false" />
+			<h:commandButton id="vote" value="Raten" action="#{gameControllerBean.addVote}" rendered="false" />
+			<h:commandButton id="newgame" value="Neues Spiel" action="#{gameControllerBean.check}" rendered="true" />
 				
 			<br />
 			
