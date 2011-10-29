@@ -8,7 +8,7 @@ public class GameModelBean {
 	private User user;
 	private int userVote;
 	private boolean gameJoined = false;
-
+	
 	public GameModelBean() {
 		System.out.println("model bean: created");
 	}

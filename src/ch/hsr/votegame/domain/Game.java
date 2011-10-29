@@ -7,7 +7,7 @@ import java.util.Random;
 public class Game {
 	private int gameId;
 	private int minRangeNr = 1;
-	private int maxRangeNr = 1;
+	private int maxRangeNr = 5;
 	private int secretVote;
 	private boolean gameOver = false;
 

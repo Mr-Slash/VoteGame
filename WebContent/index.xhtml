@@ -26,33 +26,35 @@
 		<h:form>
 			<br /><br /><br /><br />
 			
-			<h:panelGrid columns="2" cellpadding="5" border="1">  
+			<h:panelGrid columns="1" cellpadding="5" border="1">  
             	
-            		<h:outputText value="You're playing in game " rendered="#{gameModelBean.gameJoined}" />
-            		<h:outputText value="#{gameModelBean.game.gameId}" rendered="#{gameModelBean.gameJoined}" />
-           	
-					<h:outputText value="Your name is" rendered="#{!empty gameModelBean.user.nickname}" />
-					<h:outputText value="#{gameModelBean.user.nickname}" rendered="#{!empty gameModelBean.user.nickname}" />
+            		<h:outputText value="You're playing in game #{gameModelBean.game.gameId}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}" />
+					<h:outputText value="You are #{gameModelBean.user.nickname}" rendered="#{!empty gameModelBean.user.nickname}" />
 
-					<h:outputText value="Your last vote was" rendered="#{gameModelBean.gameJoined}" />
-					<h:outputText value="#{gameModelBean.user.currentVote}" rendered="#{gameModelBean.gameJoined}" />
-
-					<h:outputText value="Guess number between x and y" rendered="#{gameModelBean.gameJoined}" />
-					<h:inputText id="voteInput" value="#{gameModelBean.userVote}" rendered="#{gameModelBean.gameJoined}">
+					<h:outputText value="Your last vote was #{gameModelBean.user.currentVote}. Try again!" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver and gameModelBean.userVote != 0}" />
+					<h:outputText value="Guess number between #{gameModelBean.game.minRangeNr} and #{gameModelBean.game.maxRangeNr}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver and gameModelBean.userVote == 0}" />
+					
+					<h:panelGrid columns="2" cellpadding="5" border="1" >  
+						<h:inputText id="voteInput" value="#{gameModelBean.userVote}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}">
 							<f:validateLongRange 
 								minimum="#{gameModelBean.game.minRangeNr}"
 							 	maximum="#{gameModelBean.game.maxRangeNr}"/>
-					</h:inputText>
-					<h:message for="voteInput" showSummary="true" showDetail="false" />
-					
-					<h:commandButton value="Vote" action="#{gameControllerBean.addVote}" rendered="#{gameModelBean.gameJoined}" />
+						</h:inputText>
+					<h:commandButton value="Vote" action="#{gameControllerBean.addVote}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}" />
+					</h:panelGrid> 
 
-					<h:outputText value="The game is won. Secret key was" rendered="#{gameModelBean.game.gameOver}" />
-					<h:outputText value="#{gameModelBean.game.secretVote}" rendered="#{gameModelBean.game.gameOver}" />
+					<h:outputText value="The game is won. Secret key was #{gameModelBean.game.secretVote}"  rendered="#{gameModelBean.game.gameOver}" />
 					
-					<h:commandButton value="Neues Spiel beitreten" action="#{gameControllerBean.check}" rendered="#{!gameModelBean.gameJoined || gameModelBean.game.gameOver}"/>
-				
 	      </h:panelGrid> 
+	      
+	      <br />
+		  <h:commandButton value="Neues Spiel beitreten" action="#{gameControllerBean.check}" rendered="#{!gameModelBean.gameJoined || gameModelBean.game.gameOver}"/>
+	      
+	      <h:panelGrid columns="1" cellpadding="5" border="0">
+	      	  	<h:message for="voteInput" showSummary="true" showDetail="false" />
+	      </h:panelGrid> 
+	      
+	      
 		</h:form>
     </p:layoutUnit>  
   
