@@ -16,10 +16,10 @@ public class GameControllerBean {
 	private static int gameCounter;
 	private static final String GAMES_LIST = "gamesList";
 
-	public GameControllerBean(){
+	public GameControllerBean() {
 		getContext().getApplicationMap().put(GAMES_LIST, new ArrayList<Game>());
 	}
-	
+
 	public GameModelBean getModelBean() {
 		return modelBean;
 	}
@@ -32,7 +32,7 @@ public class GameControllerBean {
 		System.out.println("Method addVote() in Controller started");
 		Game game = modelBean.getGame();
 		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
-		if (game.isWon(modelBean.getUser())){
+		if (game.isWon(modelBean.getUser())) {
 			game.setGameOver(true);
 			return "rerender page show winner, secret vote, vote history and new game link";
 		}
@@ -41,7 +41,7 @@ public class GameControllerBean {
 
 	public String check() {
 		System.out.println("check aufgerufen");
-		
+
 		if (!gameExists()) {
 			Game joinableGame = getJoinableGame();
 
@@ -56,33 +56,40 @@ public class GameControllerBean {
 				modelBean.setGame(game);
 				storeToContext(game);
 			}
-			
+
 			return "start page";
 		}
 		return "index.xhtml";
 	}
 
 	private void addUser(Game game) {
-		int count = game.getUsers().size();
-		if (count == 1) game.addUser(new User(Game.PLAYER_2));
-		if (count == 2) {
-			game.addUser(new User(Game.PLAYER_3));
-		} else {
-			game.addUser(new User(Game.PLAYER_1));
+		User user = createUser(game);
+		game.addUser(user);
+		modelBean.setUser(user);
+		System.out.println("added User [" + game.getUsers().get(game.getUsers().size() - 1).getNickname() + "] to game " + game.getGameId());
+	}
+
+	private User createUser(Game game) {
+		switch (game.getUsers().size()) {
+		case 1:
+			return new User(Game.PLAYER_2);
+		case 2:
+			return new User(Game.PLAYER_3);
+		default:
+			return new User(Game.PLAYER_1);
 		}
-		System.out.println("added User ["+game.getUsers().get(game.getUsers().size()-1).getNickname()+"] to game "+ game.getGameId());
 	}
 
 	private void storeToContext(Game game) {
 		getGames().add(game);
-		System.out.println("stored game "+game.getGameId()+" to context");
-		System.out.println("nr of games in context = "+ getGames().size());
+		System.out.println("stored game " + game.getGameId() + " to context");
+		System.out.println("nr of games in context = " + getGames().size());
 	}
 
 	private Game getJoinableGame() {
 		System.out.println("getJoinableGame() aufgerufen");
 		Iterator<Game> it = getGames().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			Game game = it.next();
 			if (game.getUsers().size() < Game.MAX_USERS) {
 				return game;
@@ -98,14 +105,14 @@ public class GameControllerBean {
 	private ArrayList<Game> getGames() {
 		return (ArrayList<Game>) getContext().getApplicationMap().get(GAMES_LIST);
 	}
-	
+
 	private void invalidateSession() {
 		HttpSession session = (HttpSession) getContext().getSession(false);
 		session.invalidate();
 		System.out.println("Session invalidiert");
 	}
-	
-	private ExternalContext getContext(){
+
+	private ExternalContext getContext() {
 		return FacesContext.getCurrentInstance().getExternalContext();
 	}
 }

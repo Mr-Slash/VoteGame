@@ -20,6 +20,7 @@ public class GameModelBean {
 	public void setUserVote(int userVote) {
 		this.userVote = userVote;
 		System.out.println("model bean: user voted " + userVote);
+		user.setCurrentVote(getUserVote());
 	}
 
 	public User getUser() {
