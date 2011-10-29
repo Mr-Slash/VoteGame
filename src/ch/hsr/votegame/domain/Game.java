@@ -9,7 +9,7 @@ public class Game {
 	private int minRangeNr = 1;
 	private int maxRangeNr = 5;
 	private int secretVote;
-	private boolean gameOver;
+	private boolean gameOver = false;
 
 	public static final int MAX_USERS = 3;
 	public static final String PLAYER_1 = "Spieler 1";

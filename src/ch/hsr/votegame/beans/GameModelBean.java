@@ -7,18 +7,19 @@ public class GameModelBean {
 	private Game game;
 	private User user;
 	private int userVote;
-	
-	public GameModelBean(){
+	private boolean gameJoined = false;
+
+	public GameModelBean() {
 		System.out.println("model bean: created");
 	}
-	
+
 	public int getUserVote() {
 		return userVote;
 	}
 
 	public void setUserVote(int userVote) {
 		this.userVote = userVote;
-		System.out.println("model bean: user voted "+ userVote);
+		System.out.println("model bean: user voted " + userVote);
 	}
 
 	public User getUser() {
@@ -27,7 +28,7 @@ public class GameModelBean {
 
 	public void setUser(User user) {
 		this.user = user;
-		System.out.println("model bean added new user "+user.getNickname());
+		System.out.println("model bean added new user " + user.getNickname());
 	}
 
 	public Game getGame() {
@@ -36,6 +37,15 @@ public class GameModelBean {
 
 	public void setGame(Game game) {
 		this.game = game;
-		System.out.println("model bean added game "+game.getGameId());
+		System.out.println("model bean added game " + game.getGameId());
+		setGameJoined(true);
+	}
+	
+	public boolean isGameJoined() {
+		return gameJoined;
+	}
+
+	public void setGameJoined(boolean gameJoined) {
+		this.gameJoined = gameJoined;
 	}
 }

@@ -4,9 +4,8 @@ public class User {
 	private String nickname;
 	private int currentVote;
 
-	public User(String name, int vote){
+	public User(String name){
 		this.nickname = name;
-		this.currentVote = vote;
 	}
 	
 	public String getNickname() {

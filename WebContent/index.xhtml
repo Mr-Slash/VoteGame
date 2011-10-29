@@ -25,17 +25,36 @@
     <p:layoutUnit position="west" size="800">  
 		<h:form>
 			<br /><br /><br /><br />
-			<h:inputText id="voteInput" value="#{gameModelBean.userVote}" rendered="false">
+			
+			<h:panelGrid columns="2" cellpadding="5" border="1">  
+            	
+            		<h:outputText value="Du spielst im Spiel mit der Nummer: " rendered="#{gameModelBean.gameJoined}" />
+            		<h:outputText id="gameNumber" value="#{gameModelBean.game.gameId}" rendered="true" />
+            		<h:outputLabel></h:outputLabel>
+            	
+                <p:inplace editor="true" onEditUpdate="msgs">  
+       	         <p:inputText value="Bitte hier Spielnamen eingeben und neues Spiel starten" rendered="#{!gameModelBean.gameJoined}"/>  
+           	    </p:inplace>  
+
+			<h:outputText id="userName" value="#{gameModelBean.user.nickname}" rendered="#{!empty gameModelBean.user.nickname}" />
+			<h:outputText id="voteRange" value="Guess number between x and y" rendered="#{gameModelBean.gameJoined}" />
+			<h:outputText id="lastVote" value="Your last vote was..." rendered="false" />
+			
+			<h:outputText id="gameover" value="you won. secret key was ..." rendered="false" />
+			<h:outputText id="voteAgain" value="you won" rendered="false" />
+			
+			<h:inputText id="voteInput" value="#{gameModelBean.userVote}" rendered="#{gameModelBean.gameJoined}">
 				<f:validateLongRange minimum="#{gameModelBean.game.minRangeNr}"
 									 maximum="#{gameModelBean.game.maxRangeNr}"/>
 			</h:inputText>
 			
-			<h:commandButton id="vote" value="Raten" action="#{gameControllerBean.addVote}" rendered="false" />
-			<h:commandButton id="newgame" value="Neues Spiel" action="#{gameControllerBean.check}" rendered="true" />
+			<h:commandButton id="vote" value="Raten" action="#{gameControllerBean.addVote}" rendered="#{gameModelBean.gameJoined}" />
+			<h:commandButton id="newgame" value="Neues Spiel" action="#{gameControllerBean.check}" rendered="#{!gameModelBean.gameJoined}"/>
 				
 			<br />
 			
 			<h:message for="voteInput" id="errorMsgs" showSummary="true" showDetail="false" />
+	      </h:panelGrid> 
 		</h:form>
 		
     </p:layoutUnit>  
