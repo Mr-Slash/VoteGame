@@ -34,8 +34,10 @@ public class GameControllerBean {
 		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
 		if (game.isWon(modelBean.getUser())) {
 			game.setGameOver(true);
+			System.out.println("User "+modelBean.getUser().getNickname()+" has won!!!");
 			return "rerender page show winner, secret vote, vote history and new game link";
 		}
+		System.out.println("User "+modelBean.getUser().getNickname()+" has guess wrong");
 		return "show old vote and vote history";
 	}
 

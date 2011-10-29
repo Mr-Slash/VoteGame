@@ -7,7 +7,7 @@ import java.util.Random;
 public class Game {
 	private int gameId;
 	private int minRangeNr = 1;
-	private int maxRangeNr = 5;
+	private int maxRangeNr = 1;
 	private int secretVote;
 	private boolean gameOver = false;
 
@@ -23,7 +23,7 @@ public class Game {
 		gameId = id;
 		users = new ArrayList<User>(MAX_USERS);
 		voteHistory = new ArrayList<HistoryEntry<User, Integer>>();
-		secretVote = new Integer(new Random().nextInt(maxRangeNr));
+		secretVote = new Integer(new Random().nextInt(maxRangeNr)+1);
 		System.out.println("new Game created with secret Vote: " + secretVote);
 	}
 
