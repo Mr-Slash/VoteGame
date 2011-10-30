@@ -14,8 +14,17 @@
 
 <p:layout fullPage="true">  
   
-    <p:layoutUnit position="north" size="50"> 
-    		<h1>VoteGame</h1>
+    <p:layoutUnit position="north" size="60"> 
+    	<h:form>
+    			<h:panelGrid columns="2" border="0" width="100%" columnClasses="column1,column2">
+ 	 			 	<h1>VoteGame</h1>
+     				
+    				<h:panelGrid columns="2" border="0" width="100">
+    					<p:commandButton value="Deutsch" image="germanflag" />  
+						<p:commandButton value="English" image="englishflag"/>  
+    				</h:panelGrid>
+    			</h:panelGrid>
+    	</h:form>
     </p:layoutUnit>  
   
     <p:layoutUnit position="south" size="50">  
@@ -55,6 +64,8 @@
 	      </h:panelGrid> 
 	       
 	      <p:message for="voteInput" showDetail="true"/>
+	      
+	     
 	      
 		</h:form>
     </p:layoutUnit>  
