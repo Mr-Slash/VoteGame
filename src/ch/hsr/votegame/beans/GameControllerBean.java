@@ -16,10 +16,6 @@ public class GameControllerBean {
 	private static int gameCounter;
 	private static final String GAMES_LIST = "gamesList";
 
-	public GameControllerBean() {
-		getContext().getApplicationMap().put(GAMES_LIST, new ArrayList<Game>());
-	}
-
 	public GameModelBean getModelBean() {
 		return modelBean;
 	}
@@ -44,6 +40,8 @@ public class GameControllerBean {
 	public String check() {
 		System.out.println("check aufgerufen");
 
+		initGamesList();
+		
 		if (!gameExists()) {
 			Game joinableGame = getJoinableGame();
 
@@ -58,12 +56,18 @@ public class GameControllerBean {
 				modelBean.setGame(game);
 				storeToContext(game);
 			}
-
-			return "start page";
+		}else{
+			invalidateSession();
 		}
-		return "index.xhtml";
+		return "index.html";
 	}
 
+	private void initGamesList(){
+		if(getGames() == null){
+			System.out.println("controller creates new games list");
+			getContext().getApplicationMap().put(GAMES_LIST, new ArrayList<Game>());
+		}
+	}
 	private void addUser(Game game) {
 		User user = createUser(game);
 		game.addUser(user);

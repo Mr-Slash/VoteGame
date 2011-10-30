@@ -11,3 +11,14 @@ h1 {
     margin: 0px;
     padding: 0px;
 }
+
+.errors {
+ 	color: #D20005;
+  	font-weight : bold;
+  	font-size: 13px;
+  	background-color: #FFD39B;
+  	padding: 10px;
+  	margin-left: 10px;
+  	margin-top: 50px;
+  	border:1px solid #EE3B3B;
+}
