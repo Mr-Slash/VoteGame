@@ -1,5 +1,6 @@
 package ch.hsr.votegame.beans;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,24 +25,9 @@ public class GameControllerBean {
 		this.modelBean = modelBean;
 	}
 
-	public String addVote() {
-		System.out.println("Method addVote() in Controller started");
-		Game game = modelBean.getGame();
-		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
-		if (game.isWon(modelBean.getUser())) {
-			game.setGameOver(true);
-			System.out.println("User "+modelBean.getUser().getNickname()+" has won!!!");
-			return "rerender page show winner, secret vote, vote history and new game link";
-		}
-		System.out.println("User "+modelBean.getUser().getNickname()+" guessed wrong");
-		return "show old vote and vote history";
-	}
-
-	public String check() {
-		System.out.println("check aufgerufen");
-
+	public void check() {
 		initGamesList();
-		
+
 		if (!gameExists()) {
 			Game joinableGame = getJoinableGame();
 
@@ -56,23 +42,33 @@ public class GameControllerBean {
 				modelBean.setGame(game);
 				storeToContext(game);
 			}
-		}else{
-			invalidateSession();
 		}
-		return "index.html";
 	}
 
-	private void initGamesList(){
-		if(getGames() == null){
+	public String addVote() {
+		Game game = modelBean.getGame();
+		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
+		if (game.isWon(modelBean.getUser())) {
+			game.setGameOver(true);
+			System.out.println("User " + modelBean.getUser().getNickname() + " has won!!!");
+			return "index.xhtml";
+		}
+		System.out.println("User " + modelBean.getUser().getNickname() + " guessed wrong");
+		return "index.xhtml";
+	}
+	
+	private void initGamesList() {
+		if (getGames() == null) {
 			System.out.println("controller creates new games list");
 			getContext().getApplicationMap().put(GAMES_LIST, new ArrayList<Game>());
 		}
 	}
+
 	private void addUser(Game game) {
 		User user = createUser(game);
 		game.addUser(user);
 		modelBean.setUser(user);
-		System.out.println("added User [" + game.getUsers().get(game.getUsers().size() - 1).getNickname() + "] to game " + game.getGameId());
+		System.out.println("added User [" + user.getNickname() + "] to game " + game.getGameId());
 	}
 
 	private User createUser(Game game) {
@@ -88,12 +84,10 @@ public class GameControllerBean {
 
 	private void storeToContext(Game game) {
 		getGames().add(game);
-		System.out.println("stored game " + game.getGameId() + " to context");
-		System.out.println("nr of games in context = " + getGames().size());
+		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = " + getGames().size());
 	}
 
 	private Game getJoinableGame() {
-		System.out.println("getJoinableGame() aufgerufen");
 		Iterator<Game> it = getGames().iterator();
 		while (it.hasNext()) {
 			Game game = it.next();
@@ -112,10 +106,20 @@ public class GameControllerBean {
 		return (ArrayList<Game>) getContext().getApplicationMap().get(GAMES_LIST);
 	}
 
+	public String startNewGame() {
+		getGames().remove(modelBean.getGame());
+		invalidateSession();
+		try {
+			getContext().redirect("index.jsf");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "index.xhtml";
+	}
+
 	private void invalidateSession() {
 		HttpSession session = (HttpSession) getContext().getSession(false);
 		session.invalidate();
-		System.out.println("Session invalidiert");
 	}
 
 	private ExternalContext getContext() {

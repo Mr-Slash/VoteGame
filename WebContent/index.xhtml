@@ -12,6 +12,8 @@
 </h:head>
 <h:body>
 
+#{gameControllerBean.check()}
+
 <p:layout fullPage="true">  
   
     <p:layoutUnit position="north" size="60"> 
@@ -44,7 +46,7 @@
 					<h:outputText value="Guess number between #{gameModelBean.game.minRangeNr} and #{gameModelBean.game.maxRangeNr}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver and gameModelBean.userVote == 0}" />
 					
 					<h:panelGrid columns="2" cellpadding="5" border="0" >  
-						<h:inputText id="voteInput" label="Vote" value="#{gameModelBean.userVote}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}">
+						<h:inputText id="voteInput" label="Vote" value="#{gameModelBean.user.currentVote}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}">
 							<f:validateLongRange 
 								minimum="#{gameModelBean.game.minRangeNr}"
 							 	maximum="#{gameModelBean.game.maxRangeNr}"/>
@@ -60,12 +62,10 @@
 	      <br />
 		  
 		  <h:panelGrid columns="2" cellpadding="5" border="0">  
-            	<h:commandButton value="Neues Spiel beitreten" action="#{gameControllerBean.check}" rendered="#{!gameModelBean.gameJoined || gameModelBean.game.gameOver}"/>
+            	<h:commandButton value="Neues Spiel beitreten" action="#{gameControllerBean.startNewGame}" rendered="#{gameModelBean.gameJoined and gameModelBean.game.gameOver}"/>
 	      </h:panelGrid> 
 	       
 	      <p:message for="voteInput" showDetail="true"/>
-	      
-	     
 	      
 		</h:form>
     </p:layoutUnit>  

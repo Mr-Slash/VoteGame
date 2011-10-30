@@ -6,21 +6,14 @@ import ch.hsr.votegame.domain.User;
 public class GameModelBean {
 	private Game game;
 	private User user;
-	private int userVote;
 	private boolean gameJoined = false;
-	
+
 	public GameModelBean() {
 		System.out.println("model bean: created");
 	}
 
 	public int getUserVote() {
-		return userVote;
-	}
-
-	public void setUserVote(int userVote) {
-		this.userVote = userVote;
-		System.out.println("model bean: user voted " + userVote);
-		user.setCurrentVote(getUserVote());
+		return user.getCurrentVote();
 	}
 
 	public User getUser() {
@@ -38,15 +31,18 @@ public class GameModelBean {
 
 	public void setGame(Game game) {
 		this.game = game;
-		System.out.println("model bean added game " + game.getGameId());
-		setGameJoined(true);
+		if (game != null) {
+			System.out.println("model bean added game " + game.getGameId());
+			setGameJoined(true);
+		}
 	}
-	
+
 	public boolean isGameJoined() {
 		return gameJoined;
 	}
 
 	public void setGameJoined(boolean gameJoined) {
 		this.gameJoined = gameJoined;
+		System.out.println("game joined = " + gameJoined);
 	}
 }

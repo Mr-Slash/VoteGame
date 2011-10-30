@@ -22,5 +22,6 @@ public class User {
 
 	public void setCurrentVote(int currentVote) {
 		this.currentVote = currentVote;
+		System.out.println("user voted " + currentVote);
 	}
 }
