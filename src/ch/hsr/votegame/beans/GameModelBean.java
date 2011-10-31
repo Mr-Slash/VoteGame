@@ -17,7 +17,7 @@ public class GameModelBean {
 		System.out.println("model bean: created");
 	}
 
-	public int getUserVote() {
+	public Integer getUserVote() {
 		return user.getCurrentVote();
 	}
 
@@ -48,14 +48,14 @@ public class GameModelBean {
 
 	public void setGameJoined(boolean gameJoined) {
 		this.gameJoined = gameJoined;
-		System.out.println("game joined = " + gameJoined);
 	}
 
 	public void changeLocale(ActionEvent event) {
 		String choosedLocale = (String) event.getComponent().getAttributes().get("id");
 		FacesContext context = FacesContext.getCurrentInstance();
-		//ResourceBundle bundle = context.getApplication().getResourceBundle(context, "props");
-		
+		// ResourceBundle bundle =
+		// context.getApplication().getResourceBundle(context, "props");
+
 		if (choosedLocale.equals(Locale.GERMAN.getLanguage())) {
 			Locale locale = new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry());
 			context.getExternalContext().getSessionMap().put("locale", locale);

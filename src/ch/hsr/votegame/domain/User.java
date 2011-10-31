@@ -2,7 +2,7 @@ package ch.hsr.votegame.domain;
 
 public class User {
 	private String nickname;
-	private int currentVote;
+	private Integer currentVote = null;
 
 	public User(String name) {
 		this.nickname = name;
@@ -16,11 +16,11 @@ public class User {
 		this.nickname = nickname;
 	}
 
-	public int getCurrentVote() {
+	public Integer getCurrentVote() {
 		return currentVote;
 	}
 
-	public void setCurrentVote(int currentVote) {
+	public void setCurrentVote(Integer currentVote) {
 		this.currentVote = currentVote;
 		System.out.println("user voted " + currentVote);
 	}

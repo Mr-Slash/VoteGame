@@ -12,20 +12,66 @@ h1 {
     padding: 0px;
 }
 
+a:link, a:visited {
+  font-size: 11px;
+  color: #A1A1A1;
+  font-weight : bold;
+  text-decoration: none;
+}
+
+a:link:hover, a:visited:hover  {
+  font-size: 11px;
+  color: #045491;
+  font-weight : bold;
+  text-decoration : underline;
+}
+
+.maintext {
+    font-family: Impact;
+    font-size: 20px;
+    color: #D20005;
+}
+
+.newgame {
+    font-family: Impact;
+    font-size: 20px;
+    color: #D20005;    
+    text-align: center;
+}
+	
+	
 .germanflag {
     background-image: url(../images/germanflag.png) !important;
-    background-color: #000000;
 }
 
 .englishflag {
     background-image: url(../images/englishflag.png) !important;
-    background-color: #000000;
 }
 
-.column1 {
+.header1 {
     width: 90%;
 }
 
-.column2 {
+.header2 {
     width: 10%;
+}
+
+.dices {
+    width: 40%;
+    text-align: left;
+}
+
+.footer1 {
+	width: 95%;
+    text-align: right;
+}
+
+.footer2 {
+	width: 10%;
+    text-align: center;
+}
+
+.footer3 {
+	width: 10%;
+    text-align: center;
 }

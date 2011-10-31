@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class Game {
 	private int gameId;
-	private int minRangeNr = 1;
-	private int maxRangeNr = 5;
-	private int secretVote;
+	private Integer minRangeNr = 1;
+	private Integer maxRangeNr = 5;
+	private Integer secretVote;
 	private boolean gameOver = false;
 
 	public static final int MAX_USERS = 3;
@@ -36,7 +36,7 @@ public class Game {
 	}
 
 	public boolean isWon(User user) {
-		return (user.getCurrentVote() == secretVote) ? true : false;
+		return (user.getCurrentVote() != null && user.getCurrentVote().compareTo(secretVote) == 0) ? true : false;
 	}
 
 	public int getGameId() {

@@ -32,7 +32,7 @@ public class GameControllerBean {
 			Game joinableGame = getJoinableGame();
 
 			if (joinableGame != null) {
-				System.out.println("joinable game found");
+				System.out.println("joinable game nr " + joinableGame.getGameId() + " found");
 				addUser(joinableGame);
 				modelBean.setGame(joinableGame);
 			} else {
@@ -56,7 +56,7 @@ public class GameControllerBean {
 		System.out.println("User " + modelBean.getUser().getNickname() + " guessed wrong");
 		return "index.xhtml";
 	}
-	
+
 	private void initGamesList() {
 		if (getGames() == null) {
 			System.out.println("controller creates new games list");
@@ -84,7 +84,8 @@ public class GameControllerBean {
 
 	private void storeToContext(Game game) {
 		getGames().add(game);
-		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = " + getGames().size());
+		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = "
+				+ getGames().size());
 	}
 
 	private Game getJoinableGame() {
