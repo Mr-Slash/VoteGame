@@ -22,8 +22,8 @@
  	 			 	<h1>VoteGame</h1>
      				
     				<h:panelGrid columns="2" border="0" width="100">
-    					<p:commandButton value="Deutsch" image="germanflag" />  
-						<p:commandButton value="English" image="englishflag"/>  
+    					<p:commandButton id="de" value="#{props.german}" image="germanflag" actionListener="#{gameModelBean.changeLocale}" onclick="submit()"/>  
+						<p:commandButton id="en" value="#{props.english}" image="englishflag" actionListener="#{gameModelBean.changeLocale}" onclick="submit()"/>  
     				</h:panelGrid>
     			</h:panelGrid>
     	</h:form>
