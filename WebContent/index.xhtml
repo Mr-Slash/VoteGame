@@ -9,9 +9,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	<link type="text/css" rel="stylesheet" href="resources/css/default.css" />
 	<title>VoteGame</title>
+	
+	<script type="text/javascript">
+		function handleGameUpdate(response){
+			location.reload(true);
+		}
+	</script>
 </h:head>
 <h:body>
 
+<!-- in order to instantiate a game -->
 #{gameControllerBean.check()}
 
 <p:layout fullPage="true">  
@@ -21,47 +28,50 @@
     			<h:panelGrid columns="2" border="0" width="100%" columnClasses="header1,header2">
  	 			 	<h:graphicImage library="images" name="title.png"/>
     				<h:panelGrid columns="2" border="0" width="100">
-    					<p:commandButton id="de" value="#{props.german}" image="germanflag" actionListener="#{gameModelBean.changeLocale}" onclick="submit()"/>  
-						<p:commandButton id="en" value="#{props.english}" image="englishflag" actionListener="#{gameModelBean.changeLocale}" onclick="submit()"/>  
+	    				<p:commandButton id="de" value="#{props.german}" image="germanflag" actionListener="#{gameControllerBean.changeLocale}"/>  
+						<p:commandButton id="en" value="#{props.english}" image="englishflag" actionListener="#{gameControllerBean.changeLocale}"§/>  
     				</h:panelGrid>
     			</h:panelGrid>
     	</h:form>
     </p:layoutUnit>  
   
-    <p:layoutUnit position="west" size="800">  
+    <p:layoutUnit id="westLayoutId" position="west" size="800">  
 		<h:form>
-		
+			<p:message for="voteInput"/>
+			
 			<h:panelGrid columns="2" width="750" border="0" columnClasses="dices,dices" styleClass="maintext">  
 				<h:graphicImage library="images" name="dices.png"/>
 		  
 				<h:panelGrid columns="1" cellpadding="5" cellspacing="5" border="0"> 
-				
-            		<h:outputText value="#{props.ingame} #{gameModelBean.game.gameId}" 
-            					  rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}"/>
-            					  
-					<h:outputText value="#{props.player} '#{gameModelBean.user.nickname}'" 
-					              rendered="#{!empty gameModelBean.user.nickname and !gameModelBean.game.gameOver}"/>
-
-					<h:outputText value="#{props.wrong1} #{gameModelBean.user.currentVote} #{props.wrong2}" 
-								  rendered="#{gameModelBean.userVote != null and gameModelBean.gameJoined and !gameModelBean.game.gameOver}"/>
 					
-					<h:outputText value="#{props.guess} #{gameModelBean.game.minRangeNr} #{props.end} #{gameModelBean.game.maxRangeNr}:"
-								  rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver and gameModelBean.userVote == null}"/>
+					<!-- Game running -->
+					<h:panelGroup rendered="#{!gameModelBean.game.gameOver}">
+						<h:outputText value="#{gameControllerBean.welcomeMessage}" /><br/><br/>
+	
+						<h:outputText value="#{props.wrong1} #{gameModelBean.user.currentVote} #{props.wrong2}" 
+									  rendered="#{gameModelBean.userVote != null}"/><br/>
+						
+						<h:outputText value="#{props.guess} #{gameModelBean.game.minRangeNr} #{props.end} #{gameModelBean.game.maxRangeNr}:"
+									  rendered="#{gameModelBean.userVote == null}"/>
+						
+						<h:panelGrid columns="2" cellpadding="5" border="0" >  
+							<h:inputText id="voteInput" required="true" value="#{gameModelBean.user.currentVote}" label="#{props.voteInput}">
+								<f:validateLongRange minimum="#{gameModelBean.game.minRangeNr}" maximum="#{gameModelBean.game.maxRangeNr}"/>
+							</h:inputText>
+						
+						<h:commandButton value="#{props.vote}" action="#{gameControllerBean.addVote}" />
+						
+						</h:panelGrid>
+						
+						<!-- Comet -->
+						<p:push onpublish="handleGameUpdate" channel="update#{gameModelBean.game.gameId}" />
+						
+					</h:panelGroup>
 					
-					<h:panelGrid columns="2" cellpadding="5" border="0" >  
-						<h:inputText id="voteInput" 
-									 required="true" 
-									 value="#{gameModelBean.user.currentVote}" 
-									 rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}">
-							<f:validateLongRange minimum="#{gameModelBean.game.minRangeNr}" maximum="#{gameModelBean.game.maxRangeNr}"/>
-						</h:inputText>
-					<h:commandButton value="#{props.vote}" action="#{gameControllerBean.addVote}" rendered="#{gameModelBean.gameJoined and !gameModelBean.game.gameOver}" />
-					</h:panelGrid> 
-
-					<h:outputText value="#{props.gameover} #{gameModelBean.game.secretVote}" 
-								  rendered="#{gameModelBean.game.gameOver}"/>
-					
-					<h:outputText value="#{props.wonby} ???"  rendered="#{gameModelBean.game.gameOver}" />
+					<!-- Game Over -->
+					<h:panelGroup rendered="#{gameModelBean.game.gameOver}">
+						<h:outputText value="#{gameControllerBean.gameOverMessage}" escape="false" />
+					</h:panelGroup>
 					
 	      		</h:panelGrid> 
 	      
@@ -71,14 +81,53 @@
 		  <h:panelGrid columns="1" width="100%" border="0" columnClasses="newgame">  
             	<h:commandButton value="#{props.newgame}" action="#{gameControllerBean.startNewGame}" rendered="#{gameModelBean.gameJoined and gameModelBean.game.gameOver}"/>
 	      </h:panelGrid> 
-	       
-	      <p:message for="voteInput" showDetail="true" />
 	      
 		</h:form>
     </p:layoutUnit>  
   
-    <p:layoutUnit position="center" size="200">  
-     		<h:outputText value="Statistik" /> 
+	  
+    <p:layoutUnit id="centerLayoutId" position="center" size="200">  
+     		<h:outputText value="Statistik" />
+     		<h:form>
+	     		<p:dataTable id="statisticTableId" rowIndexVar="index" var="historyEntry" value="#{gameModelBean.game.history}">
+	     			
+	     			<!-- attempt -->
+	     			<p:column>
+						<f:facet name="header">
+							<h:outputText value="#{props.attemp}" />
+						</f:facet>
+						<h:outputText value="#{index + 1}" />
+					</p:column>
+					
+					<!-- player 1 -->
+	     			<p:column>
+						<f:facet name="header">
+							<h:outputText value="#{gameModelBean.game.users[0].nickname}" rendered="#{gameModelBean.game.userCount > 0}"/>
+							<h:outputText value="???" rendered="#{! (gameModelBean.game.userCount > 0)}" />
+						</f:facet>
+						<h:outputText value="#{historyEntry.vote}" rendered="#{historyEntry.user.playerId == 1}"/>
+					</p:column>
+					
+					<!-- player 2 -->
+	     			<p:column>
+						<f:facet name="header">
+							<h:outputText value="#{gameModelBean.game.users[1].nickname}" rendered="#{gameModelBean.game.userCount > 1}"/>
+							<h:outputText value="???" rendered="#{! (gameModelBean.game.userCount > 1)}" />
+						</f:facet>
+						<h:outputText value="#{historyEntry.vote}" rendered="#{historyEntry.user.playerId == 2}"/>
+					</p:column>
+					
+					<!-- player 3 -->
+	     			<p:column>
+						<f:facet name="header">
+							<h:outputText value="#{gameModelBean.game.users[2].nickname}" rendered="#{gameModelBean.game.userCount > 2}"/>
+							<h:outputText value="???" rendered="#{! (gameModelBean.game.userCount > 2)}" />
+						</f:facet>
+						<h:outputText value="#{historyEntry.vote}" rendered="#{historyEntry.user.playerId == 3}"/>
+					</p:column>
+					
+	     		</p:dataTable>
+     		</h:form> 
     </p:layoutUnit>  
   
     <p:layoutUnit position="south" size="50">  

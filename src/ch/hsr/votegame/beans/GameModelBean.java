@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import ch.hsr.votegame.domain.Game;
 import ch.hsr.votegame.domain.User;
@@ -12,13 +13,14 @@ public class GameModelBean {
 	private Game game;
 	private User user;
 	private boolean gameJoined = false;
+	private String language = "de";
 
 	public GameModelBean() {
 		System.out.println("model bean: created");
 	}
 
 	public Integer getUserVote() {
-		return user.getCurrentVote();
+		return user != null ? user.getCurrentVote() : null;
 	}
 
 	public User getUser() {
@@ -49,21 +51,12 @@ public class GameModelBean {
 	public void setGameJoined(boolean gameJoined) {
 		this.gameJoined = gameJoined;
 	}
+	
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
-	public void changeLocale(ActionEvent event) {
-		String choosedLocale = (String) event.getComponent().getAttributes().get("id");
-		FacesContext context = FacesContext.getCurrentInstance();
-		// ResourceBundle bundle =
-		// context.getApplication().getResourceBundle(context, "props");
-
-		if (choosedLocale.equals(Locale.GERMAN.getLanguage())) {
-			Locale locale = new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry());
-			context.getExternalContext().getSessionMap().put("locale", locale);
-			context.getViewRoot().setLocale(locale);
-		} else {
-			Locale locale = new Locale(Locale.ENGLISH.getLanguage(), Locale.ENGLISH.getCountry());
-			context.getExternalContext().getSessionMap().put("locale", locale);
-			context.getViewRoot().setLocale(locale);
-		}
+	public String getLanguage() {
+		return language;
 	}
 }

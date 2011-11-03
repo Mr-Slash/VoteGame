@@ -1,15 +1,19 @@
 package ch.hsr.votegame.beans;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.comet.CometContext;
+
 import ch.hsr.votegame.domain.Game;
-import ch.hsr.votegame.domain.HistoryEntry;
 import ch.hsr.votegame.domain.User;
 
 public class GameControllerBean {
@@ -29,31 +33,30 @@ public class GameControllerBean {
 		initGamesList();
 
 		if (!gameExists()) {
-			Game joinableGame = getJoinableGame();
+			Game joinableGame = getOrCreateJoinableGame();
 
-			if (joinableGame != null) {
-				System.out.println("joinable game nr " + joinableGame.getGameId() + " found");
-				addUser(joinableGame);
-				modelBean.setGame(joinableGame);
-			} else {
-				System.out.println("no joinable games found");
-				Game game = new Game(++gameCounter);
-				addUser(game);
-				modelBean.setGame(game);
-				storeToContext(game);
-			}
+			User user = new User("Player " + (joinableGame.getUsers().size() + 1));
+			joinableGame.addUser(user);
+			modelBean.setUser(user);
+			modelBean.setGame(joinableGame);
+
+			System.out.println("joinable game nr " + joinableGame.getGameId() + " found");
+			System.out.println("added User [" + user.getNickname() + "] to game " + joinableGame.getGameId());
 		}
 	}
 
-	public String addVote() {
+	public synchronized String addVote() {
 		Game game = modelBean.getGame();
-		game.addToHistory(new HistoryEntry<User, Integer>(modelBean.getUser(), modelBean.getUserVote()));
+		game.addToHistory(modelBean.getUser(), modelBean.getUserVote());
+		
 		if (game.isWon(modelBean.getUser())) {
 			game.setGameOver(true);
+			game.setWinner(modelBean.getUser());
 			System.out.println("User " + modelBean.getUser().getNickname() + " has won!!!");
-			return "index.xhtml";
 		}
 		System.out.println("User " + modelBean.getUser().getNickname() + " guessed wrong");
+		
+		CometContext.publish("update" + game.getGameId(), game.isGameOver());
 		return "index.xhtml";
 	}
 
@@ -64,45 +67,29 @@ public class GameControllerBean {
 		}
 	}
 
-	private void addUser(Game game) {
-		User user = createUser(game);
-		game.addUser(user);
-		modelBean.setUser(user);
-		System.out.println("added User [" + user.getNickname() + "] to game " + game.getGameId());
-	}
-
-	private User createUser(Game game) {
-		switch (game.getUsers().size()) {
-		case 1:
-			return new User(Game.PLAYER_2);
-		case 2:
-			return new User(Game.PLAYER_3);
-		default:
-			return new User(Game.PLAYER_1);
-		}
-	}
-
 	private void storeToContext(Game game) {
 		getGames().add(game);
-		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = "
-				+ getGames().size());
+		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = " + getGames().size());
 	}
 
-	private Game getJoinableGame() {
-		Iterator<Game> it = getGames().iterator();
-		while (it.hasNext()) {
-			Game game = it.next();
-			if (game.getUsers().size() < Game.MAX_USERS) {
+	private Game getOrCreateJoinableGame() {
+		for (Game game : getGames()) {
+			if (!game.isFull() && !game.isGameOver()) {
 				return game;
 			}
 		}
-		return null;
+		
+		Game game = new Game(++gameCounter);
+		storeToContext(game);
+		
+		return game;
 	}
 
 	private boolean gameExists() {
 		return (modelBean.getGame() != null);
 	}
 
+	@SuppressWarnings("unchecked")
 	private ArrayList<Game> getGames() {
 		return (ArrayList<Game>) getContext().getApplicationMap().get(GAMES_LIST);
 	}
@@ -117,7 +104,35 @@ public class GameControllerBean {
 		}
 		return "index.xhtml";
 	}
+	
+	public void changeLocale(ActionEvent event) {
+		System.out.println("GameControllerBean.changeLocale()");
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		String lang = event.getComponent().getId();
 
+		if (lang.equals(Locale.GERMAN.getLanguage())) {
+			Locale locale = new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry());
+			context.getViewRoot().setLocale(locale);
+		} else {
+			Locale locale = new Locale(Locale.ENGLISH.getLanguage(), Locale.ENGLISH.getCountry());
+			context.getViewRoot().setLocale(locale);
+		}
+	}	
+	
+	public String getWinner(){
+		User winner = getModelBean().getGame().getWinner();
+		return winner != null ? winner.getNickname() : "-";
+	}
+	
+	public String getGameOverMessage(){
+		return getMessage("gameover", getModelBean().getGame().getSecretVote(), getWinner());
+	}
+	
+	public String getWelcomeMessage(){
+		return getMessage("welcome", getModelBean().getUser().getNickname(), getModelBean().getGame().getGameId());
+	}
+	
 	private void invalidateSession() {
 		HttpSession session = (HttpSession) getContext().getSession(false);
 		session.invalidate();
@@ -125,5 +140,11 @@ public class GameControllerBean {
 
 	private ExternalContext getContext() {
 		return FacesContext.getCurrentInstance().getExternalContext();
+	}
+	
+	private String getMessage(String key, Object... params){
+		FacesContext context = FacesContext.getCurrentInstance();
+	    ResourceBundle bundle = context.getApplication().getResourceBundle(context, "props");
+	    return MessageFormat.format(bundle.getString(key), params);
 	}
 }

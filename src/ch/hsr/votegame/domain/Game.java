@@ -16,27 +16,27 @@ public class Game {
 	public static final String PLAYER_2 = "Spieler 2";
 	public static final String PLAYER_3 = "Spieler 3";
 
-	private List<HistoryEntry<User, Integer>> voteHistory;
-	private ArrayList<User> users;
+	private List<HistoryEntry> voteHistory = new ArrayList<HistoryEntry>();
+	private List<User> users = new ArrayList<User>();
+	private User winner;
 
 	public Game(int id) {
 		gameId = id;
-		users = new ArrayList<User>(MAX_USERS);
-		voteHistory = new ArrayList<HistoryEntry<User, Integer>>();
 		secretVote = new Integer(new Random().nextInt(maxRangeNr)+1);
 		System.out.println("new Game created with secret Vote: " + secretVote);
 	}
 
-	public void addUser(User user) {
+	public synchronized void addUser(User user) {
 		users.add(user);
+		user.setPlayerId(users.size());
 	}
 
-	public ArrayList<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
 	public boolean isWon(User user) {
-		return (user.getCurrentVote() != null && user.getCurrentVote().compareTo(secretVote) == 0) ? true : false;
+		return (user.getCurrentVote() != null && user.getCurrentVote().equals(secretVote));
 	}
 
 	public int getGameId() {
@@ -71,16 +71,16 @@ public class Game {
 		this.secretVote = secretVote;
 	}
 
-	public List<HistoryEntry<User, Integer>> getHistory() {
+	public List<HistoryEntry> getHistory() {
 		return voteHistory;
 	}
 
-	public void setHistory(List<HistoryEntry<User, Integer>> history) {
+	public void setHistory(List<HistoryEntry> history) {
 		this.voteHistory = history;
 	}
 
-	public void addToHistory(HistoryEntry<User, Integer> historyEntry) {
-		voteHistory.add(historyEntry);
+	public void addToHistory(User user, Integer vote) {
+		voteHistory.add(new HistoryEntry(user, vote));
 	}
 
 	public boolean isGameOver() {
@@ -89,5 +89,25 @@ public class Game {
 
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+	
+	public boolean isFull(){
+		return getUsers().size() == MAX_USERS;
+	}
+	
+	/**
+	 * Workaround in order to get the amount of users in EL-Syntax
+	 * @return
+	 */
+	public int getUserCount(){
+		return getUsers().size();
+	}
+
+	public void setWinner(User winner) {
+		this.winner = winner;
+	}
+
+	public User getWinner() {
+		return winner;
 	}
 }

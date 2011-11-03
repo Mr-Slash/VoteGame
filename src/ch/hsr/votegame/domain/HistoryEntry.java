@@ -1,24 +1,24 @@
 package ch.hsr.votegame.domain;
 
-public class HistoryEntry<K, V> {
+public class HistoryEntry {
 	 
-	  private final K key;
-	  private final V value;
+	  private final User user;
+	  private final Integer vote;
 	 
-	  public HistoryEntry(K k,V v) {  
-	    key = k;
-	    value = v;   
+	  public HistoryEntry(User user, Integer vote) {  
+	    this.user = user;
+	    this.vote = vote;   
 	  }
 	 
-	  public K getKey() {
-	    return key;
+	  public User getUser() {
+	    return user;
 	  }
 	 
-	  public V getValue() {
-	    return value;
+	  public Integer getVote() {
+	    return vote;
 	  }
 	 
 	  public String toString() { 
-	    return "(" + key + ", " + value + ")";  
+	    return "(" + user + ", " + vote + ")";  
 	  }
 	}
