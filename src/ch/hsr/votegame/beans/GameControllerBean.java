@@ -30,6 +30,9 @@ public class GameControllerBean {
 	}
 
 	public void check() {
+		// set the user locale
+		FacesContext.getCurrentInstance().getViewRoot().setLocale(getModelBean().getLocale());
+		
 		initGamesList();
 
 		if (!gameExists()) {
@@ -113,12 +116,17 @@ public class GameControllerBean {
 
 		if (lang.equals(Locale.GERMAN.getLanguage())) {
 			Locale locale = new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry());
-			context.getViewRoot().setLocale(locale);
+			getModelBean().setLocale(locale);
 		} else {
 			Locale locale = new Locale(Locale.ENGLISH.getLanguage(), Locale.ENGLISH.getCountry());
-			context.getViewRoot().setLocale(locale);
+			getModelBean().setLocale(locale);
 		}
-	}	
+	}
+	
+	
+	public String getLocale(){
+		return FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
+	}
 	
 	public String getWinner(){
 		User winner = getModelBean().getGame().getWinner();

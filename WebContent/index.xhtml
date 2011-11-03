@@ -11,8 +11,8 @@
 	<title>VoteGame</title>
 	
 	<script type="text/javascript">
-		function handleGameUpdate(response){
-			location.reload(true);
+		function refresh(){
+			location.href = "/VoteGame/index.jsf";
 		}
 	</script>
 </h:head>
@@ -23,13 +23,13 @@
 
 <p:layout fullPage="true">  
   
-    <p:layoutUnit position="north" size="70"> 
+    <p:layoutUnit position="north" size="70">
     	<h:form>
     			<h:panelGrid columns="2" border="0" width="100%" columnClasses="header1,header2">
  	 			 	<h:graphicImage library="images" name="title.png"/>
     				<h:panelGrid columns="2" border="0" width="100">
-	    				<p:commandButton id="de" value="#{props.german}" image="germanflag" actionListener="#{gameControllerBean.changeLocale}"/>  
-						<p:commandButton id="en" value="#{props.english}" image="englishflag" actionListener="#{gameControllerBean.changeLocale}"§/>  
+	    				<p:commandButton id="de" value="#{props.german}" image="germanflag" actionListener="#{gameControllerBean.changeLocale}" oncomplete="refresh();"/>  
+						<p:commandButton id="en" value="#{props.english}" image="englishflag" actionListener="#{gameControllerBean.changeLocale}" oncomplete="refresh();"/>  
     				</h:panelGrid>
     			</h:panelGrid>
     	</h:form>
@@ -64,7 +64,7 @@
 						</h:panelGrid>
 						
 						<!-- Comet -->
-						<p:push onpublish="handleGameUpdate" channel="update#{gameModelBean.game.gameId}" />
+						<p:push onpublish="refresh" channel="update#{gameModelBean.game.gameId}" />
 						
 					</h:panelGroup>
 					
