@@ -138,6 +138,14 @@ public class GameControllerBean {
 	public String getWelcomeMessage() {
 		return getMessage("welcome", getModelBean().getUser().getNickname(), getModelBean().getGame().getGameId());
 	}
+	
+	public String getWrongMessage(){
+		return getMessage("wrong", getModelBean().getUserVote());
+	}
+	
+	public String getGuessMessage(){
+		return getMessage("guess", getModelBean().getGame().getMinRangeNr(), getModelBean().getGame().getMaxRangeNr());
+	}
 
 	private void invalidateSession() {
 		HttpSession session = (HttpSession) getContext().getSession(false);

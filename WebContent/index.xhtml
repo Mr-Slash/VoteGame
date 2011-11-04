@@ -47,11 +47,11 @@
 					<!-- Game running -->
 					<h:panelGroup rendered="#{!gameModelBean.game.gameOver}">
 						<h:outputText value="#{gameControllerBean.welcomeMessage}" /><br/><br/>
-	
-						<h:outputText value="#{props.wrong1} #{gameModelBean.user.currentVote} #{props.wrong2}" 
+						
+						<h:outputText value="#{gameControllerBean.wrongMessage}" 
 									  rendered="#{gameModelBean.userVote != null}"/><br/>
 						
-						<h:outputText value="#{props.guess} #{gameModelBean.game.minRangeNr} #{props.end} #{gameModelBean.game.maxRangeNr}:"
+						<h:outputText value="#{gameControllerBean.guessMessage}:"
 									  rendered="#{gameModelBean.userVote == null}"/>
 						
 						<h:panelGrid columns="2" cellpadding="5" border="0" >  
