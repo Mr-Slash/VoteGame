@@ -10,12 +10,7 @@ public class Game {
 	private Integer maxRangeNr = 5;
 	private Integer secretVote;
 	private boolean gameOver = false;
-
 	public static final int MAX_USERS = 3;
-	public static final String PLAYER_1 = "Spieler 1";
-	public static final String PLAYER_2 = "Spieler 2";
-	public static final String PLAYER_3 = "Spieler 3";
-
 	private List<HistoryEntry> voteHistory = new ArrayList<HistoryEntry>();
 	private List<User> users = new ArrayList<User>();
 	private User winner;

@@ -2,10 +2,6 @@ package ch.hsr.votegame.beans;
 
 import java.util.Locale;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
-
 import ch.hsr.votegame.domain.Game;
 import ch.hsr.votegame.domain.User;
 

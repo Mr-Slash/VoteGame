@@ -32,7 +32,7 @@ public class GameControllerBean {
 	public void check() {
 		// set the user locale
 		FacesContext.getCurrentInstance().getViewRoot().setLocale(getModelBean().getLocale());
-		
+
 		initGamesList();
 
 		if (!gameExists()) {
@@ -51,14 +51,14 @@ public class GameControllerBean {
 	public synchronized String addVote() {
 		Game game = modelBean.getGame();
 		game.addToHistory(modelBean.getUser(), modelBean.getUserVote());
-		
+
 		if (game.isWon(modelBean.getUser())) {
 			game.setGameOver(true);
 			game.setWinner(modelBean.getUser());
 			System.out.println("User " + modelBean.getUser().getNickname() + " has won!!!");
 		}
 		System.out.println("User " + modelBean.getUser().getNickname() + " guessed wrong");
-		
+
 		CometContext.publish("update" + game.getGameId(), game.isGameOver());
 		return "index.xhtml";
 	}
@@ -72,7 +72,8 @@ public class GameControllerBean {
 
 	private void storeToContext(Game game) {
 		getGames().add(game);
-		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = " + getGames().size());
+		System.out.println("stored game " + game.getGameId() + " to context. nr of games in context = "
+				+ getGames().size());
 	}
 
 	private Game getOrCreateJoinableGame() {
@@ -81,10 +82,10 @@ public class GameControllerBean {
 				return game;
 			}
 		}
-		
+
 		Game game = new Game(++gameCounter);
 		storeToContext(game);
-		
+
 		return game;
 	}
 
@@ -107,11 +108,9 @@ public class GameControllerBean {
 		}
 		return "index.xhtml";
 	}
-	
+
 	public void changeLocale(ActionEvent event) {
 		System.out.println("GameControllerBean.changeLocale()");
-		
-		FacesContext context = FacesContext.getCurrentInstance();
 		String lang = event.getComponent().getId();
 
 		if (lang.equals(Locale.GERMAN.getLanguage())) {
@@ -122,25 +121,24 @@ public class GameControllerBean {
 			getModelBean().setLocale(locale);
 		}
 	}
-	
-	
-	public String getLocale(){
+
+	public String getLocale() {
 		return FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
 	}
-	
-	public String getWinner(){
+
+	public String getWinner() {
 		User winner = getModelBean().getGame().getWinner();
 		return winner != null ? winner.getNickname() : "-";
 	}
-	
-	public String getGameOverMessage(){
+
+	public String getGameOverMessage() {
 		return getMessage("gameover", getModelBean().getGame().getSecretVote(), getWinner());
 	}
-	
-	public String getWelcomeMessage(){
+
+	public String getWelcomeMessage() {
 		return getMessage("welcome", getModelBean().getUser().getNickname(), getModelBean().getGame().getGameId());
 	}
-	
+
 	private void invalidateSession() {
 		HttpSession session = (HttpSession) getContext().getSession(false);
 		session.invalidate();
@@ -149,10 +147,10 @@ public class GameControllerBean {
 	private ExternalContext getContext() {
 		return FacesContext.getCurrentInstance().getExternalContext();
 	}
-	
-	private String getMessage(String key, Object... params){
+
+	private String getMessage(String key, Object... params) {
 		FacesContext context = FacesContext.getCurrentInstance();
-	    ResourceBundle bundle = context.getApplication().getResourceBundle(context, "props");
-	    return MessageFormat.format(bundle.getString(key), params);
+		ResourceBundle bundle = context.getApplication().getResourceBundle(context, "props");
+		return MessageFormat.format(bundle.getString(key), params);
 	}
 }

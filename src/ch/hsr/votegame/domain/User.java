@@ -1,13 +1,13 @@
 package ch.hsr.votegame.domain;
 
 public class User {
-	
+
 	/** The username */
 	private String nickname;
-	
+
 	/** The current vote of the user */
 	private Integer currentVote = null;
-	
+
 	/** Indicates the game join order */
 	private int playerId;
 
@@ -35,8 +35,8 @@ public class User {
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
 	}
-	
-	public int getPlayerId(){
+
+	public int getPlayerId() {
 		return playerId;
 	}
 }
